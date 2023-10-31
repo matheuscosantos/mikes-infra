@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "${name}_terraform_state"
-    key    = "${name}_infra.tfstate"
+    bucket = "mikes_terraform_state"
+    key    = "mikes_infra.tfstate"
     region = "us-east-2"
     encrypt = true
   }
