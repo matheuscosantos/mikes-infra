@@ -2,25 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-# -- bucket for terraform state
-
-resource "aws_s3_bucket" "terraform_state_s3_bucket" {
-  bucket = "${name}_terraform_state"
-}
-
-resource "aws_s3_bucket_acl" "terraform_state_s3_bucket_acl" {
-  bucket = aws_s3_bucket.terraform_state_s3_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_versioning" "terraform_state_s3_bucket_versioning" {
-  bucket = aws_s3_bucket.terraform_state_s3_bucket.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
 # -- ecr
 
 resource "aws_ecr_repository" "ecr_repository" {
