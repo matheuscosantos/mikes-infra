@@ -5,7 +5,7 @@ provider "aws" {
 # -- ecr
 
 resource "aws_ecr_repository" "ecr_repository" {
-  name = "${var.name}_repository"
+  name = "${var.name}_app"
 }
 
 # -- private network
