@@ -54,7 +54,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.name}_cluster"
 }
 
-# -- creating ec2 instances
+# -- creating launch/autoscaling group for cluster
 
 data "aws_ami" "amazon_linux_ami" {
   most_recent = true
@@ -72,8 +72,19 @@ data "aws_ami" "amazon_linux_ami" {
   owners = ["amazon"]
 }
 
-resource "aws_instance" "ec2_instance_subnet_a" {
-  ami           = data.aws_ami.amazon_linux_ami.id
+resource "aws_launch_configuration" "ec2_launch_configuration" {
+  image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.private_subnet_a.id
+  name_prefix   = "${var.name}_launch_configuration"
+}
+
+resource "aws_autoscaling_group" "ec2_autoscaling_group" {
+  name                      = "${var.name}_autoscaling_group"
+  launch_configuration       = aws_launch_configuration.ec2_launch_configuration.name
+  min_size                  = 1
+  max_size                  = 1
+  desired_capacity          = 1
+  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id, aws_subnet.private_subnet_c.id]
+  health_check_type         = "EC2"
+  health_check_grace_period = 300
 }
