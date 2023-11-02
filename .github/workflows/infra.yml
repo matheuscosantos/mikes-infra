@@ -21,7 +21,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
         run: terraform init
