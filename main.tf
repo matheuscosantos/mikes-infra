@@ -48,13 +48,7 @@ resource "aws_subnet" "private_subnet_c" {
   }
 }
 
-# -- ecs cluster
-
-resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.name}_cluster"
-}
-
-# -- creating launch/autoscaling group for cluster
+# -- creating capacity provider
 
 data "aws_ami" "amazon_linux_ami" {
   most_recent = true
@@ -94,4 +88,21 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
     id      = aws_launch_template.ec2_launch_configuration.id
     version = "$Latest"
   }
+}
+
+resource "aws_ecs_capacity_provider" "ec2_capacity_provider" {
+  name                      = "${var.name}_capacity_provider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = aws_autoscaling_group.ec2_autoscaling_group.arn
+  }
+}
+
+
+# -- ecs cluster
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "${var.name}_cluster"
+
+  capacity_providers = [aws_ecs_capacity_provider.ec2_capacity_provider.name]
 }
