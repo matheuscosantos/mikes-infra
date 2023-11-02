@@ -103,4 +103,8 @@ resource "aws_ecs_capacity_provider" "ec2_capacity_provider" {
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.name}_cluster"
+
+  capacity_providers = [
+    aws_ecs_capacity_provider.ec2_capacity_provider.name,
+  ]
 }
