@@ -72,7 +72,7 @@ data "aws_ami" "amazon_linux_ami" {
   owners = ["amazon"]
 }
 
-resource "aws_launch_configuration" "ec2_launch_configuration" {
+resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   name_prefix   = "${var.name}_launch_configuration"
@@ -80,11 +80,18 @@ resource "aws_launch_configuration" "ec2_launch_configuration" {
 
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   name                      = "${var.name}_autoscaling_group"
-  launch_configuration       = aws_launch_configuration.ec2_launch_configuration.name
+
+  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id, aws_subnet.private_subnet_c.id]
+
+  desired_capacity          = 1
   min_size                  = 1
   max_size                  = 1
-  desired_capacity          = 1
-  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id, aws_subnet.private_subnet_c.id]
+
   health_check_type         = "EC2"
   health_check_grace_period = 300
+
+  launch_template {
+    id      = aws_launch_template.ec2_launch_configuration.id
+    version = "$Latest"
+  }
 }
