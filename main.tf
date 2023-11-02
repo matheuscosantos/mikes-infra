@@ -76,6 +76,8 @@ resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   name_prefix   = "${var.name}_launch_configuration"
+
+  user_data = file("user_data/launch_template.sh")
 }
 
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
