@@ -53,3 +53,27 @@ resource "aws_subnet" "private_subnet_c" {
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.name}_cluster"
 }
+
+# -- creating ec2 instances
+
+data "aws_ami" "amazon_linux_ami" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["amazon"]
+}
+
+resource "aws_instance" "ec2_instance_subnet_a" {
+  ami           = data.aws_ami.amazon_linux_ami.id
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.private_subnet_a.id
+}
