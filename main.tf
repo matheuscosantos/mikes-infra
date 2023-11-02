@@ -77,7 +77,7 @@ resource "aws_launch_template" "ec2_launch_configuration" {
   instance_type = "t2.micro"
   name_prefix   = "${var.name}_launch_configuration"
 
-  user_data = file("user_data/launch_template.sh")
+  user_data = base64encode(file("user_data/launch_template.sh"))
 }
 
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
