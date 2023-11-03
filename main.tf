@@ -77,22 +77,16 @@ resource "aws_iam_role" "ec2_role" {
   assume_role_policy = file("iam/role/ec2_role.json")
 }
 
-resource "aws_iam_policy" "ssm_policy" {
-  name        = "${var.name}_ssm_policy"
-  description = "Custom policy for Systems Manager"
-  policy = file("iam/policy/ssm_policy.json")
+resource "aws_iam_policy_attachment" "ec2_role_ec2_policy_attachment" {
+  name       = "${var.name}_ec2_role_ec2_policy_attachment"
+  roles      = [aws_iam_role.ec2_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 resource "aws_iam_policy_attachment" "ec2_role_ssm_policy_attachment" {
   name       = "${var.name}_ec2_role_ssm_policy_attachment"
   roles      = [aws_iam_role.ec2_role.name]
-  policy_arn = aws_iam_policy.ssm_policy.arn
-}
-
-resource "aws_iam_policy_attachment" "ec2_role_ec2_policy_attachment" {
-  name       = "${var.name}_ec2_role_ec2_policy_attachment"
-  roles      = [aws_iam_role.ec2_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {
