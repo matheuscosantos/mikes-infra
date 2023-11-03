@@ -167,7 +167,7 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   vpc_zone_identifier        = [aws_subnet.private_subnet_a.id]
 
   desired_capacity          = 1
-  min_size                  = 1
+  min_size                  = 0
   max_size                  = 1
 
   health_check_type         = "EC2"
