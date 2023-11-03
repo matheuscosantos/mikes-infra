@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ECS_CLUSTER=mikes_cluster
+
 sudo yum -y update
 
 sudo amazon-linux-extras disable docker
