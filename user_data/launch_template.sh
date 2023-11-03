@@ -1,15 +1,9 @@
 #!/bin/bash
 
-yum update -y
-
-# Install ECS agent
-yum install -y amazon-ecs-agent
+sudo yum update -y
 
 # Install SSM agent
-yum install -y amazon-ssm-agent
-
-# Start ECS agent
-systemctl start ecs
+sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
 
 # Start SSM agent
-systemctl start amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
