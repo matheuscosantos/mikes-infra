@@ -53,6 +53,7 @@ resource "aws_subnet" "private_subnet_c" {
 resource "aws_security_group" "security_group" {
   name        = "${var.name}_security_group"
   description = "Permissive security group for educational purposes"
+  vpc_id      = aws_vpc.private_vpc.id
 
   ingress {
     from_port   = 0
