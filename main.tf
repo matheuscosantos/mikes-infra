@@ -154,12 +154,28 @@ resource "aws_iam_instance_profile" "instance_profile" {
 resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
+  key_name      = "${var.name}_launch_configuration"
   name_prefix   = "${var.name}_launch_configuration"
 
   vpc_security_group_ids = [aws_security_group.security_group.id]
 
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
+  }
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 30
+      volume_type = "gp2"
+    }
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "ecs-instance"
+    }
   }
 
   user_data = filebase64("user_data/launch_template.sh")
@@ -175,9 +191,6 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   desired_capacity          = 1
   min_size                  = 0
   max_size                  = 1
-
-  health_check_type         = "EC2"
-  health_check_grace_period = 300
 
   launch_template {
     id      = aws_launch_template.ec2_launch_configuration.id
