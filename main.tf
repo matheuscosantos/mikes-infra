@@ -127,7 +127,7 @@ resource "aws_launch_template" "ec2_launch_configuration" {
     name = aws_iam_instance_profile.instance_profile.name
   }
 
-  user_data = base64encode(file("user_data/launch_template.sh"))
+  user_data = filebase64("user_data/launch_template.sh")
 }
 
 # -- creating autoscaling group
