@@ -12,6 +12,7 @@ resource "aws_ecr_repository" "ecr_repository" {
 
 resource "aws_vpc" "private_vpc" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_hostnames = true
 
   tags = {
     Name = "${var.name}_private_vpc"
@@ -159,7 +160,10 @@ resource "aws_ecs_capacity_provider" "ec2_capacity_provider" {
     auto_scaling_group_arn         = aws_autoscaling_group.ec2_autoscaling_group.arn
 
     managed_scaling {
-      status = "ENABLED"
+      maximum_scaling_step_size = 10000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 80
     }
   }
 }
