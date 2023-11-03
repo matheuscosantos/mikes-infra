@@ -157,6 +157,11 @@ resource "aws_ecs_capacity_provider" "ec2_capacity_provider" {
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ec2_autoscaling_group.arn
+
+    managed_scaling {
+      status = "ENABLED"
+      target_capacity = 80
+    }
   }
 }
 
