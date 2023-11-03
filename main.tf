@@ -72,27 +72,32 @@ data "aws_ami" "amazon_linux_ami" {
   owners = ["amazon"]
 }
 
-resource "aws_iam_role" "ec2_iam_role" {
-  name = "ecs-instance-role"
+resource "aws_iam_role" "ec2_role" {
+  name = "${var.name}_ec2_role"
   assume_role_policy = file("iam/role/ec2_role.json")
 }
 
-resource "aws_iam_policy" "ec2_ssm_policy" {
-  name        = "SSMPolicy"
+resource "aws_iam_policy" "ssm_policy" {
+  name        = "${var.name}_ssm_policy"
   description = "Custom policy for Systems Manager"
   policy = file("iam/policy/ssm_policy.json")
 }
 
-resource "aws_iam_policy_attachment" "ec2_policy_attachment_ec2" {
-  name       = "ecs-instance-policy-attachment"
-  roles      = [aws_iam_role.ec2_iam_role.name]
+resource "aws_iam_policy_attachment" "ec2_role_ssm_policy_attachment" {
+  name       = "${var.name}_ec2_role_ssm_policy_attachment"
+  roles      = [aws_iam_role.ec2_role.name]
+  policy_arn = aws_iam_policy.ssm_policy.arn
+}
+
+resource "aws_iam_policy_attachment" "ec2_role_ec2_policy_attachment" {
+  name       = "${var.name}_ec2_role_ec2_policy_attachment"
+  roles      = [aws_iam_role.ec2_role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_policy_attachment" "ec2_policy_attachment_ssm" {
-  name       = "ecs-instance-ssm-policy-attachment"
-  roles      = [aws_iam_role.ec2_iam_role.name]
-  policy_arn = aws_iam_policy.ec2_ssm_policy.arn
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "${var.name}_instance_profile"
+  role = aws_iam_role.ec2_role.name
 }
 
 resource "aws_launch_template" "ec2_launch_configuration" {
@@ -101,7 +106,7 @@ resource "aws_launch_template" "ec2_launch_configuration" {
   name_prefix   = "${var.name}_launch_configuration"
 
   iam_instance_profile {
-    name = aws_iam_role.ec2_iam_role.name
+    name = aws_iam_instance_profile.instance_profile.name
   }
 
   user_data = base64encode(file("user_data/launch_template.sh"))
