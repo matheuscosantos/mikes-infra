@@ -111,7 +111,7 @@ resource "aws_launch_template" "ec2_launch_configuration" {
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   name                      = "${var.name}_autoscaling_group"
 
-  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id, aws_subnet.private_subnet_c.id]
+  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id]
 
   desired_capacity          = 1
   min_size                  = 1
