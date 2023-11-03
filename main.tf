@@ -54,7 +54,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   name = "${var.name}_cluster"
 }
 
-# -- creating capacity provider
+# -- creating launch template
 
 data "aws_ami" "amazon_linux_ami" {
   most_recent = true
@@ -72,13 +72,42 @@ data "aws_ami" "amazon_linux_ami" {
   owners = ["amazon"]
 }
 
+resource "aws_iam_role" "ec2_iam_role" {
+  name = "ecs-instance-role"
+  assume_role_policy = file("iam/role/ec2_role.json")
+}
+
+resource "aws_iam_policy" "ec2_ssm_policy" {
+  name        = "SSMPolicy"
+  description = "Custom policy for Systems Manager"
+  policy = file("iam/policy/ssm_policy.json")
+}
+
+resource "aws_iam_policy_attachment" "ec2_policy_attachment_ec2" {
+  name       = "ecs-instance-policy-attachment"
+  roles      = [aws_iam_role.ec2_iam_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_policy_attachment" "ec2_policy_attachment_ssm" {
+  name       = "ecs-instance-ssm-policy-attachment"
+  roles      = [aws_iam_role.ec2_iam_role.name]
+  policy_arn = aws_iam_policy.ec2_ssm_policy.arn
+}
+
 resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   name_prefix   = "${var.name}_launch_configuration"
 
+  iam_instance_profile {
+    name = aws_iam_role.ec2_iam_role.name
+  }
+
   user_data = base64encode(file("user_data/launch_template.sh"))
 }
+
+# -- creating autoscaling group
 
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   name                      = "${var.name}_autoscaling_group"
@@ -98,6 +127,8 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   }
 }
 
+# -- creating capacity providers
+
 resource "aws_ecs_capacity_provider" "ec2_capacity_provider" {
   name                      = "${var.name}_capacity_provider"
 
@@ -113,4 +144,3 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
     aws_ecs_capacity_provider.ec2_capacity_provider.name
   ]
 }
-
