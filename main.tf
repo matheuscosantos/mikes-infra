@@ -48,6 +48,23 @@ resource "aws_subnet" "private_subnet_c" {
   }
 }
 
+# -- security group
+
+resource "aws_security_group" "security_group" {
+  name        = "${var.name}_security_group"
+  description = "Permissive security group for educational purposes"
+
+  ingress {
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # -- ecs cluster
 
 resource "aws_ecs_cluster" "ecs_cluster" {
@@ -98,6 +115,8 @@ resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
   name_prefix   = "${var.name}_launch_configuration"
+
+  vpc_security_group_ids = [aws_security_group.security_group.id]
 
   iam_instance_profile {
     name = aws_iam_instance_profile.instance_profile.name
