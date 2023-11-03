@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo ECS_CLUSTER=your-cluster-name >> /etc/ecs/ecs.config
+echo ECS_CLUSTER=mikes_cluster >> /etc/ecs/ecs.config
 
 sudo yum -y update
 
