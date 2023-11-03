@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ECS_CLUSTER=your-cluster-name >> /etc/ecs/ecs.config
+
 sudo yum -y update
 
 sudo amazon-linux-extras disable docker
