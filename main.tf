@@ -22,6 +22,7 @@ resource "aws_vpc" "private_vpc" {
 resource "aws_subnet" "private_subnet_a" {
   vpc_id     = aws_vpc.private_vpc.id
   cidr_block = "10.0.0.0/20"
+  map_public_ip_on_launch = true
   availability_zone = "${var.region}a"
 
   tags = {
@@ -32,6 +33,7 @@ resource "aws_subnet" "private_subnet_a" {
 resource "aws_subnet" "private_subnet_b" {
   vpc_id     = aws_vpc.private_vpc.id
   cidr_block = "10.0.16.0/20"
+  map_public_ip_on_launch = true
   availability_zone = "${var.region}b"
 
   tags = {
@@ -39,18 +41,12 @@ resource "aws_subnet" "private_subnet_b" {
   }
 }
 
-resource "aws_subnet" "private_subnet_c" {
-  vpc_id     = aws_vpc.private_vpc.id
-  cidr_block = "10.0.32.0/20"
-  availability_zone = "${var.region}c"
-
-  tags = {
-    Name = "${var.name}_private_subnet_c"
-  }
-}
-
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.private_vpc.id
+
+  tags = {
+    Name = "${var.name}_internet_gateway"
+  }
 }
 
 resource "aws_route_table" "route_table" {
@@ -72,16 +68,10 @@ resource "aws_route_table_association" "subnet_b_route_table_association" {
   route_table_id = aws_route_table.route_table.id
 }
 
-resource "aws_route_table_association" "subnet_c_route_table_association" {
-  subnet_id      = aws_subnet.private_subnet_c.id
-  route_table_id = aws_route_table.route_table.id
-}
-
 # -- security group
 
 resource "aws_security_group" "security_group" {
   name        = "${var.name}_security_group"
-  description = "Permissive security group for educational purposes"
   vpc_id      = aws_vpc.private_vpc.id
 
   ingress {
@@ -185,11 +175,11 @@ resource "aws_launch_template" "ec2_launch_configuration" {
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   name                      = "${var.name}_autoscaling_group"
 
-  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id]
+  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
-  desired_capacity          = 1
   min_size                  = 0
   max_size                  = 1
+  desired_capacity          = 1
 
   launch_template {
     id      = aws_launch_template.ec2_launch_configuration.id
@@ -233,4 +223,3 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
     capacity_provider = aws_ecs_capacity_provider.ec2_capacity_provider.name
   }
 }
-
