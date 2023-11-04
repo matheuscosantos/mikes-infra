@@ -227,7 +227,7 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
 # -- lb
 
 resource "aws_lb" "ecs_alb" {
-  name               = "${var.name}_ecs_alb"
+  name               = "${var.name}-ecs-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.security_group.id]
@@ -239,7 +239,7 @@ resource "aws_lb" "ecs_alb" {
 }
 
 resource "aws_lb_target_group" "lb_target_group" {
-  name        = "${var.name}_lb_target_group"
+  name        = "${var.name}-lb-target-group"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
