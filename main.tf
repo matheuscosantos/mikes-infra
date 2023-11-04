@@ -239,7 +239,7 @@ resource "aws_lb" "ecs_alb" {
 }
 
 resource "aws_lb_target_group" "lb_target_group_2" {
-  name        = "${var.name}-lb-target-group_2"
+  name        = "${var.name}-lb-target-group-2"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = aws_vpc.private_vpc.id
