@@ -246,7 +246,7 @@ resource "aws_lb_target_group" "lb_target_group" {
   vpc_id      = aws_vpc.private_vpc.id
 
   health_check {
-    path = "/"
+    path = "/actuator/health"
   }
 }
 
