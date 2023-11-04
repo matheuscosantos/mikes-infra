@@ -233,3 +233,4 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
     capacity_provider = aws_ecs_capacity_provider.ec2_capacity_provider.name
   }
 }
+
