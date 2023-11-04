@@ -223,3 +223,40 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_cluster_capacity_providers" {
     capacity_provider = aws_ecs_capacity_provider.ec2_capacity_provider.name
   }
 }
+
+# -- lb
+
+resource "aws_lb" "ecs_alb" {
+  name               = "${var.name}_ecs_alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.security_group.id]
+  subnets            = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
+
+  tags = {
+    Name = "ecs-alb"
+  }
+}
+
+resource "aws_lb_target_group" "lb_target_group" {
+  name        = "${var.name}_lb_target_group"
+  port        = 8080
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.private_vpc.id
+
+  health_check {
+    path = "/"
+  }
+}
+
+resource "aws_lb_listener" "lb_listener" {
+  load_balancer_arn = aws_lb.ecs_alb.arn
+  port              = 8080
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+  }
+}
