@@ -242,7 +242,6 @@ resource "aws_lb_target_group" "lb_target_group" {
   name        = "${var.name}-lb-target-group"
   port        = 8080
   protocol    = "HTTP"
-  target_type = "ip"
   vpc_id      = aws_vpc.private_vpc.id
 
   health_check {
