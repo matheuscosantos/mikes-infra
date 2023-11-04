@@ -238,10 +238,11 @@ resource "aws_lb" "ecs_alb" {
   }
 }
 
-resource "aws_lb_target_group" "lb_target_group_2" {
-  name        = "${var.name}-lb-target-group-2"
+resource "aws_lb_target_group" "lb_target_group" {
+  name        = "${var.name}-lb-target-group"
   port        = 8080
   protocol    = "HTTP"
+  target_type = "ip"
   vpc_id      = aws_vpc.private_vpc.id
 
   health_check {
@@ -256,6 +257,6 @@ resource "aws_lb_listener" "lb_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.lb_target_group_2.arn
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
   }
 }
