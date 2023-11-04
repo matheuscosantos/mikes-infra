@@ -175,7 +175,7 @@ resource "aws_launch_template" "ec2_launch_configuration" {
 resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   name                      = "${var.name}_autoscaling_group"
 
-  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id]
+  vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   min_size                  = 0
   max_size                  = 1
@@ -231,7 +231,7 @@ resource "aws_lb" "ecs_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.security_group.id]
-  subnets            = [aws_subnet.private_subnet_a.id]
+  subnets            = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   tags = {
     Name = "ecs-alb"
