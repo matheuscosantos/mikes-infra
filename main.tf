@@ -154,7 +154,6 @@ resource "aws_iam_instance_profile" "instance_profile" {
 resource "aws_launch_template" "ec2_launch_configuration" {
   image_id      = data.aws_ami.amazon_linux_ami.id
   instance_type = "t2.micro"
-  key_name      = "${var.name}_launch_configuration"
   name_prefix   = "${var.name}_launch_configuration"
 
   vpc_security_group_ids = [aws_security_group.security_group.id]
