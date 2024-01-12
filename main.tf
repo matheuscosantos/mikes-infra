@@ -10,7 +10,7 @@ resource "aws_ecr_repository" "ecr_repository" {
 
 # -- network
 
-resource "aws_vpc" "private_vpc" {
+resource "aws_default_vpc" "private_vpc" {
   cidr_block = "10.0.0.0/16"
   enable_dns_hostnames = true
 
@@ -270,4 +270,14 @@ resource "aws_lb_listener" "lb_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.lb_target_group.arn
   }
+}
+
+resource "aws_elasticache_cluster" "redis" {
+  cluster_id           = "order-cache"
+  engine               = "redis"
+  node_type            = "cache.m4.large"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
 }
