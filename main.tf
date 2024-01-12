@@ -20,7 +20,7 @@ resource "aws_default_vpc" "private_vpc" {
 }
 
 resource "aws_subnet" "private_subnet_a" {
-  vpc_id     = aws_vpc.private_vpc.id
+  vpc_id     = aws_default_vpc.private_vpc.id
   cidr_block = "10.0.0.0/20"
   map_public_ip_on_launch = true
   availability_zone = "${var.region}a"
@@ -31,7 +31,7 @@ resource "aws_subnet" "private_subnet_a" {
 }
 
 resource "aws_subnet" "private_subnet_b" {
-  vpc_id     = aws_vpc.private_vpc.id
+  vpc_id     = aws_default_vpc.private_vpc.id
   cidr_block = "10.0.16.0/20"
   map_public_ip_on_launch = true
   availability_zone = "${var.region}b"
@@ -42,7 +42,7 @@ resource "aws_subnet" "private_subnet_b" {
 }
 
 resource "aws_subnet" "private_subnet_c" {
-  vpc_id     = aws_vpc.private_vpc.id
+  vpc_id     = aws_default_vpc.private_vpc.id
   cidr_block = "10.0.32.0/20"
   map_public_ip_on_launch = true
   availability_zone = "${var.region}c"
@@ -53,7 +53,7 @@ resource "aws_subnet" "private_subnet_c" {
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id = aws_vpc.private_vpc.id
+  vpc_id = aws_default_vpc.private_vpc.id
 
   tags = {
     Name = "${var.name}_internet_gateway"
@@ -61,7 +61,7 @@ resource "aws_internet_gateway" "internet_gateway" {
 }
 
 resource "aws_route_table" "route_table" {
-  vpc_id = aws_vpc.private_vpc.id
+  vpc_id = aws_default_vpc.private_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -83,7 +83,7 @@ resource "aws_route_table_association" "subnet_b_route_table_association" {
 
 resource "aws_security_group" "security_group" {
   name        = "${var.name}_security_group"
-  vpc_id      = aws_vpc.private_vpc.id
+  vpc_id      = aws_default_vpc.private_vpc.id
 
   ingress {
     from_port   = 0
@@ -189,8 +189,8 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   min_size                  = 0
-  max_size                  = 0 // desligando recursos p/ evitar cobranças
-  desired_capacity          = 0 // desligando recursos p/ evitar cobranças
+  max_size                  = 2 // desligando recursos p/ evitar cobranças
+  desired_capacity          = 2 // desligando recursos p/ evitar cobranças
 
   launch_template {
     id      = aws_launch_template.ec2_launch_configuration.id
@@ -254,7 +254,7 @@ resource "aws_lb_target_group" "lb_target_group" {
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = aws_vpc.private_vpc.id
+  vpc_id      = aws_default_vpc.private_vpc.id
 
   health_check {
     path = "/actuator/health"
