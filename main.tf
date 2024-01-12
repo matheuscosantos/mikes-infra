@@ -274,7 +274,7 @@ resource "aws_lb_listener" "lb_listener" {
 
 resource "aws_elasticache_subnet_group" "elasticache_subnet_group" {
   name       = "elasticache_subnet_group"
-  subnet_ids = [aws_subnet.aws_subnet.private_subnet_a.id, aws_subnet.aws_subnet.private_subnet_b.id, aws_subnet.aws_subnet.private_subnet_c.id]
+  subnet_ids = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id, aws_subnet.private_subnet_c.id]
 }
 
 resource "aws_elasticache_cluster" "redis" {
