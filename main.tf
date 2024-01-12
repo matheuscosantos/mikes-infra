@@ -43,7 +43,7 @@ resource "aws_subnet" "private_subnet_b" {
 
 resource "aws_subnet" "private_subnet_c" {
   vpc_id     = aws_vpc.private_vpc.id
-  cidr_block = "10.0.16.0/20"
+  cidr_block = "10.0.32.0/20"
   map_public_ip_on_launch = true
   availability_zone = "${var.region}c"
 
