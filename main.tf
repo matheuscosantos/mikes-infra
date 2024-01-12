@@ -11,9 +11,6 @@ resource "aws_ecr_repository" "ecr_repository" {
 # -- network
 
 resource "aws_default_vpc" "private_vpc" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_hostnames = true
-
   tags = {
     Name = "${var.name}_private_vpc"
   }
