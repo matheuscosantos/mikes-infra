@@ -119,7 +119,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
   private_dns_enabled = true
 }
 
-resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
+resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
   vpc_id             = aws_vpc.private_vpc.id
   service_name       = "com.amazonaws.${var.region}.sqs"
   vpc_endpoint_type  = "Interface"
