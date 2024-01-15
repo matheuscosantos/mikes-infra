@@ -287,7 +287,7 @@ resource "aws_lb_listener" "lb_listener" {
 # -- ElastiCache Redis
 
 resource "aws_elasticache_cluster" "redis_cluster" {
-  cluster_id           = "${var.name}_redis_cluster"
+  cluster_id           = "${var.name}-redis-cluster"
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
@@ -299,21 +299,21 @@ resource "aws_elasticache_cluster" "redis_cluster" {
   security_group_ids = [aws_security_group.redis_security_group.id]
 
   tags = {
-    Name = "${var.name}_redis_cluster"
+    Name = "${var.name}-redis-cluster"
   }
 }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
-  name       = "${var.name}_redis_subnet_group"
+  name       = "${var.name}-redis-subnet-group"
   subnet_ids = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   tags = {
-    Name = "${var.name}_redis_subnet_group"
+    Name = "${var.name}-redis-subnet-group"
   }
 }
 
 resource "aws_security_group" "redis_security_group" {
-  name        = "${var.name}_redis_security_group"
+  name        = "${var.name}-redis-security-group"
   description = "Security group for Redis cluster"
   vpc_id      = aws_vpc.private_vpc.id
 
@@ -325,6 +325,6 @@ resource "aws_security_group" "redis_security_group" {
   }
 
   tags = {
-    Name = "${var.name}_redis_security_group"
+    Name = "${var.name}-redis-security-group"
   }
 }
