@@ -102,7 +102,6 @@ resource "aws_security_group" "security_group" {
 
 # -- endpoints
 
-/*
 resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
   vpc_id             = aws_vpc.private_vpc.id
   service_name       = "com.amazonaws.${var.region}.sns"
@@ -136,7 +135,6 @@ resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
 
   private_dns_enabled = true
 }
-*/
 
 # -- ecs cluster
 
