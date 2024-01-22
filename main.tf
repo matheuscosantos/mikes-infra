@@ -292,29 +292,6 @@ resource "aws_lb" "ecs_alb" {
   }
 }
 
-resource "aws_lb_target_group" "lb_target_group" {
-  name        = "${var.name}-lb-target-group"
-  port        = 8080
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = aws_vpc.private_vpc.id
-
-  health_check {
-    path = "/actuator/health"
-  }
-}
-
-resource "aws_lb_listener" "lb_listener" {
-  load_balancer_arn = aws_lb.ecs_alb.arn
-  port              = 8080
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.lb_target_group.arn
-  }
-}
-
 # -- ElastiCache Redis
 
 resource "aws_elasticache_cluster" "redis_cluster" {
