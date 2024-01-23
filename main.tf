@@ -102,39 +102,39 @@ resource "aws_security_group" "security_group" {
 
 # -- endpoints
 
-# resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
-#   vpc_id             = aws_vpc.private_vpc.id
-#   service_name       = "com.amazonaws.${var.region}.sns"
-#   vpc_endpoint_type  = "Interface"
-#
-#   security_group_ids = [
-#     aws_security_group.security_group.id
-#   ]
-#
-#   subnet_ids         = [
-#     aws_subnet.private_subnet_a.id,
-#     aws_subnet.private_subnet_b.id
-#   ]
-#
-#   private_dns_enabled = true
-# }
-#
-# resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
-#   vpc_id             = aws_vpc.private_vpc.id
-#   service_name       = "com.amazonaws.${var.region}.sqs"
-#   vpc_endpoint_type  = "Interface"
-#
-#   security_group_ids = [
-#     aws_security_group.security_group.id
-#   ]
-#
-#   subnet_ids         = [
-#     aws_subnet.private_subnet_a.id,
-#     aws_subnet.private_subnet_b.id
-#   ]
-#
-#   private_dns_enabled = true
-# }
+resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
+  vpc_id             = aws_vpc.private_vpc.id
+  service_name       = "com.amazonaws.${var.region}.sns"
+  vpc_endpoint_type  = "Interface"
+
+  security_group_ids = [
+    aws_security_group.security_group.id
+  ]
+
+  subnet_ids         = [
+    aws_subnet.private_subnet_a.id,
+    aws_subnet.private_subnet_b.id
+  ]
+
+  private_dns_enabled = true
+}
+
+resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
+  vpc_id             = aws_vpc.private_vpc.id
+  service_name       = "com.amazonaws.${var.region}.sqs"
+  vpc_endpoint_type  = "Interface"
+
+  security_group_ids = [
+    aws_security_group.security_group.id
+  ]
+
+  subnet_ids         = [
+    aws_subnet.private_subnet_a.id,
+    aws_subnet.private_subnet_b.id
+  ]
+
+  private_dns_enabled = true
+}
 
 # -- ecs cluster
 
