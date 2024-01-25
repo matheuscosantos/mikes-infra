@@ -340,3 +340,4 @@ resource "aws_security_group" "redis_security_group" {
     Name = "${var.name}-redis-security-group"
   }
 }
+
