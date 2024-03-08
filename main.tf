@@ -236,8 +236,8 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   min_size                  = 0
-  max_size                  = 0 // desligando recursos p/ evitar cobranças
-  desired_capacity          = 0 // desligando recursos p/ evitar cobranças
+  max_size                  = 3 // desligando recursos p/ evitar cobranças
+  desired_capacity          = 3 // desligando recursos p/ evitar cobranças
 
   launch_template {
     id      = aws_launch_template.ec2_launch_configuration.id
