@@ -101,7 +101,7 @@ resource "aws_security_group" "security_group" {
 }
 
 # -- endpoints
-
+/*
 resource "aws_vpc_endpoint" "vpc_endpoint_sns" {
   vpc_id             = aws_vpc.private_vpc.id
   service_name       = "com.amazonaws.${var.region}.sns"
@@ -135,6 +135,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
 
   private_dns_enabled = true
 }
+*/
 
 # -- ecs cluster
 
@@ -232,8 +233,8 @@ resource "aws_autoscaling_group" "ec2_autoscaling_group" {
   vpc_zone_identifier        = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
 
   min_size                  = 0
-  max_size                  = 3 // desligando recursos p/ evitar cobranças
-  desired_capacity          = 3 // desligando recursos p/ evitar cobranças
+  max_size                  = 0 // desligando recursos p/ evitar cobranças
+  desired_capacity          = 0 // desligando recursos p/ evitar cobranças
 
   launch_template {
     id      = aws_launch_template.ec2_launch_configuration.id
